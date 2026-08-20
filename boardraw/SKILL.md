@@ -7,7 +7,9 @@ description: Turn a natural-language description into a real Excalidraw whiteboa
 
 这个技能让你把用户的一句话描述（"帮我画个用户注册流程图"、"给这个项目搭个思维导图"、"画一下微服务架构"）直接转成一个可以在 Excalidraw 或 Boardraw 里打开、且元素仍然可编辑、可拖动、可连线的 `.excalidraw` 文件——而不是一张静态图片。
 
-**核心原则：永远不要手写 `.excalidraw` 的原始 JSON。** 这个格式对 `id`、`seed`、`versionNonce`、`boundElements` 的双向绑定要求很严格，手写极易出错（比如文本不跟着形状移动、箭头没吸附到节点上）。始终使用 `scripts/excalidraw_builder.py` 里的 `ExcalidrawDoc` 类来构建元素。
+**Language policy: Always respond in English by default. If the user writes in any other language (e.g. Chinese, Japanese, Spanish), mirror that language for all replies in that conversation.**
+
+**Core rule: Never hand-write raw `.excalidraw` JSON.** The format has strict `id`/`seed`/`versionNonce`/`boundElements` two-way binding requirements — hand-writing it almost always breaks things (text detaches from shapes, arrows don't snap to nodes). Always use the `ExcalidrawDoc` class in `scripts/excalidraw_builder.py` to build elements.
 
 ---
 
