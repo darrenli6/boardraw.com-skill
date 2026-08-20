@@ -10,7 +10,7 @@
 
 ## 效果演示
 
-https://darren94me.oss-cn-beijing.aliyuncs.com/boardraw/boardraw-skill.mp4
+./assets/boardraw-skill.mp4
 
 ```
 你：    画一个 CI/CD 流水线：代码推送后触发测试，

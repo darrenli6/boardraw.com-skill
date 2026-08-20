@@ -10,7 +10,7 @@ Describe a process in plain English (or any language) — Claude designs the dia
 
 ## Demo
 
-https://darren94me.oss-cn-beijing.aliyuncs.com/boardraw/boardraw-skill.mp4
+./assets/boardraw-skill.mp4
 
 ```
 You:    Draw a CI/CD pipeline: code push triggers tests,
