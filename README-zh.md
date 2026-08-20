@@ -10,7 +10,7 @@
 
 ## 效果演示
 
-./assets/boardraw-skill.mp4
+<video src="./assets/boardraw-skill.mp4" autoplay loop muted playsinline width="100%"></video>
 
 ```
 你：    画一个 CI/CD 流水线：代码推送后触发测试，

@@ -10,7 +10,7 @@ Describe a process in plain English (or any language) — Claude designs the dia
 
 ## Demo
 
-./assets/boardraw-skill.mp4
+<video src="./assets/boardraw-skill.mp4" autoplay loop muted playsinline width="100%"></video>
 
 ```
 You:    Draw a CI/CD pipeline: code push triggers tests,
