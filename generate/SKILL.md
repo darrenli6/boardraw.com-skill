@@ -1,3 +1,8 @@
+---
+name: generate
+description: 
+  Convert natural language descriptions into visual flowcharts and automatically upload them to boardraw.com.
+---
 # Boardraw Flowchart Generator
 
 Convert natural language descriptions into visual flowcharts and automatically upload them to [boardraw.com](https://boardraw.com).
