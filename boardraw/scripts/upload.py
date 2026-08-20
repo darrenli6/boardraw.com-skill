@@ -31,7 +31,7 @@ def load_api_key() -> str:
                 for line in env_file.read_text().splitlines():
                     line = line.strip()
                     if line.startswith("BOARDRAW_API_KEY=") and not line.startswith("#"):
-                        key = line.split("=", 1)[1].strip()
+                        key = line.split("=", 1)[1].strip().strip('"').strip("'")
                         break
             if key:
                 break
@@ -53,7 +53,7 @@ def upload(whiteboard: dict, api_key: str) -> dict:
         data=payload,
         headers={
             "Content-Type": "application/json",
-            "api_key": api_key,
+            "x-api-key": api_key,
         },
         method="POST",
     )
@@ -100,7 +100,7 @@ def main() -> None:
         user_info = result["user"]
         uuid = file_info["uuid"]
         print(f"✅ Uploaded successfully!")
-        print(f"🔗 View online: https://www.boardraw.com/board/{uuid}")
+        print(f"🔗 View online: https://www.boardraw.com/workspace/{uuid}")
         print(f"📁 File name:   {file_info['fileName']}")
         print(f"👤 Account:     {user_info['name']} ({user_info['email']})")
     elif status == 401:

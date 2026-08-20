@@ -30,7 +30,7 @@ Claude：📋 流程图预览
 
 Claude：✅ 流程图已上传到 boardraw.com！
 
-        🔗 在线查看/编辑：https://www.boardraw.com/board/c2f9b3b6-4b5e-4c22-9a28-fb3e2a4c9d11
+        🔗 在线查看/编辑：https://www.boardraw.com/workspace/c2f9b3b6-4b5e-4c22-9a28-fb3e2a4c9d11
         📁 文件名：        skill--a83f29cd
         👤 账户：          Olivia Carter (olivia@example.com)
 
@@ -216,7 +216,7 @@ boardraw.com-skill/
 
 | 字段 | 说明 |
 |---|---|
-| 认证请求头 | `api_key: br_...` |
+| 认证请求头 | `x-api-key: br_...` |
 | 请求体 | `{ "whiteboard": { ...excalidraw 对象... } }` |
 | 成功响应 | `201` — 返回 `file.uuid` 和用户信息 |
 | 套餐要求 | Pro 或 Team |

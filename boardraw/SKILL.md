@@ -101,7 +101,7 @@ python3 -c "import json; json.load(open('output.excalidraw')); print('OK')"
 ```bash
 curl -s -X POST "https://www.boardraw.com/api/keys/auth" \
   -H "Content-Type: application/json" \
-  -H "api_key: $BOARDRAW_API_KEY" \
+  -H "x-api-key: $BOARDRAW_API_KEY" \
   -d "{\"whiteboard\": $(cat output.excalidraw)}"
 ```
 
@@ -114,7 +114,7 @@ python scripts/upload.py output.excalidraw
 
 | Status | Action |
 |--------|--------|
-| 201 | Extract `file.uuid` → show `https://www.boardraw.com/board/{uuid}` |
+| 201 | Extract `file.uuid` → show `https://www.boardraw.com/workspace/{uuid}` |
 | 401 (missing key) | Ask user to set `BOARDRAW_API_KEY` |
 | 401 (invalid/revoked) | Ask user to verify the key in boardraw.com Settings |
 | 403 | Ask user to upgrade to Pro or Team plan |
@@ -125,7 +125,7 @@ python scripts/upload.py output.excalidraw
 ```
 ✅ Diagram uploaded to boardraw.com!
 
-🔗 View / edit online: https://www.boardraw.com/board/{uuid}
+🔗 View / edit online: https://www.boardraw.com/workspace/{uuid}
 📁 File name:          {fileName}
 👤 Account:            {user.name} ({user.email})
 

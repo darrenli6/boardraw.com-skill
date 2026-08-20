@@ -30,7 +30,7 @@ You:    Looks good, go ahead.
 
 Claude: ✅ Diagram uploaded to boardraw.com!
 
-        🔗 View / edit online: https://www.boardraw.com/board/c2f9b3b6-4b5e-4c22-9a28-fb3e2a4c9d11
+        🔗 View / edit online: https://www.boardraw.com/workspace/c2f9b3b6-4b5e-4c22-9a28-fb3e2a4c9d11
         📁 File name:          skill--a83f29cd
         👤 Account:            Olivia Carter (olivia@example.com)
 
@@ -217,7 +217,7 @@ User prompt
 
 | Item | Value |
 |---|---|
-| Auth header | `api_key: br_...` |
+| Auth header | `x-api-key: br_...` |
 | Body | `{ "whiteboard": { ...excalidraw object... } }` |
 | Success | `201` — returns `file.uuid` and user info |
 | Plan required | Pro or Team |
