@@ -2,9 +2,9 @@
 
 > **Language:** English | [中文](./README-zh.md)
 
-A [Claude Code](https://claude.ai/code) skill that turns natural language into flowcharts and uploads them directly to [boardraw.com](https://boardraw.com).
+A [Claude Code](https://claude.ai/code) skill that turns natural language into fully editable flowcharts and uploads them directly to [boardraw.com](https://boardraw.com).
 
-Describe a process in plain English (or any language) — Claude designs the diagram, asks for your confirmation, then publishes it to your boardraw workspace with a shareable link.
+Describe a process in plain English (or any language) — Claude designs the diagram, asks for your confirmation, builds it with the `ExcalidrawDoc` builder (so every element stays movable, restyable, and reconnectable), then publishes it to your boardraw workspace with a shareable link.
 
 ---
 
@@ -24,13 +24,30 @@ Claude: 📋 Diagram Preview
                                         │                               └── No  → [Notify Slack ❌]
                                         └── No  → [Notify Slack ❌]
 
-        Does this match what you need? Confirm and I'll upload it to boardraw.com.
+        Does this match what you need? Confirm and I'll generate and upload it.
 
 You:    Looks good, go ahead.
 
-Claude: ✅ Uploaded!
-        🔗 https://www.boardraw.com/board/c2f9b3b6-4b5e-4c22-9a28-fb3e2a4c9d11
+Claude: ✅ Diagram uploaded to boardraw.com!
+
+        🔗 View / edit online: https://www.boardraw.com/board/c2f9b3b6-4b5e-4c22-9a28-fb3e2a4c9d11
+        📁 File name:          skill--a83f29cd
+        👤 Account:            Olivia Carter (olivia@example.com)
+
+        The file can also be opened directly in Excalidraw or any compatible tool.
 ```
+
+---
+
+## What You Can Draw
+
+| Type | Example prompt |
+|---|---|
+| Flowchart | "Draw a user registration flow with email validation" |
+| Mind map | "Make a mind map for our Q3 product roadmap" |
+| Architecture diagram | "Diagram a microservices system: API gateway, auth service, three backends" |
+| Org chart | "Draw the engineering org: CTO → 3 EMs → 5 ICs each" |
+| Kanban / sticky-note wall | "Create a kanban board with Todo, In Progress, Done columns" |
 
 ---
 
@@ -40,7 +57,7 @@ Claude: ✅ Uploaded!
 |---|---|
 | [Claude Code](https://claude.ai/code) | CLI, desktop app, or IDE extension |
 | boardraw.com account | **Pro or Team** plan required for API access |
-| Python 3.8+ | Only needed if you use the standalone upload script |
+| Python 3.8+ | Required — the builder script generates Excalidraw JSON |
 
 ---
 
@@ -58,7 +75,7 @@ cd boardraw.com-skill
 Add the skill to your Claude Code user settings so it's available in every project:
 
 ```bash
-claude config add skills "$(pwd)/generate"
+claude config add skills "$(pwd)/boardraw"
 ```
 
 Or register it only for the current project by adding to `.claude/settings.json`:
@@ -66,7 +83,7 @@ Or register it only for the current project by adding to `.claude/settings.json`
 ```json
 {
   "skills": [
-    "/absolute/path/to/boardraw.com-skill/generate"
+    "/absolute/path/to/boardraw.com-skill/boardraw"
   ]
 }
 ```
@@ -85,7 +102,7 @@ Edit `.env`:
 BOARDRAW_API_KEY=br_your_api_key_here
 ```
 
-To get an API key: log in to [boardraw.com](https://boardraw.com) → **Settings → API Keys** → Create new key.
+To get an API key: log in to [boardraw.com](https://boardraw.com) → **Settings → API Keys** → Create new key (requires Pro or Team plan).
 
 > The skill reads `BOARDRAW_API_KEY` from your shell environment or from a `.env` file anywhere up the directory tree from your working directory.
 
@@ -100,37 +117,53 @@ Draw a user onboarding flow for a mobile app.
 ```
 
 ```
-Create a flowchart showing how our order processing system works:
+Create a flowchart for our order processing system:
 orders come in, inventory is checked, payment is processed,
-then the order ships. If inventory is low, reorder first.
+then the order ships. If inventory is low, trigger a reorder first.
 ```
 
 ```
-/generate Draw an architecture diagram for a microservices system
-with API gateway, auth service, and three backend services.
+/generate Draw an architecture diagram: React frontend → API gateway →
+auth service + order service + notification service → PostgreSQL + Redis
 ```
 
 Claude will:
 1. **Preview** the diagram as a text outline
 2. **Wait** for your confirmation (or adjustments)
-3. **Generate** the Excalidraw JSON
-4. **Upload** to boardraw.com and return a shareable link
+3. **Build** the `.excalidraw` file using `scripts/excalidraw_builder.py`
+4. **Validate** the JSON, then **upload** to boardraw.com
+5. **Return** a shareable link — fully editable in boardraw or Excalidraw
 
 ---
 
-## Standalone Upload Script
+## Standalone Scripts
 
-If you want to upload a pre-built Excalidraw JSON file without going through the skill:
+### Upload an existing `.excalidraw` file
 
 ```bash
 # From a file
-python generate/scripts/upload.py whiteboard.json
+python boardraw/scripts/upload.py whiteboard.excalidraw
 
 # From stdin
-cat whiteboard.json | python generate/scripts/upload.py -
+cat whiteboard.excalidraw | python boardraw/scripts/upload.py -
 ```
 
-The script uses the same `BOARDRAW_API_KEY` lookup (env var → `.env` file). No third-party dependencies required.
+### Use the builder directly
+
+```python
+from boardraw.scripts.excalidraw_builder import ExcalidrawDoc, vertical_flow_positions
+
+doc = ExcalidrawDoc()
+positions = vertical_flow_positions(3, x0=300, y0=40, w=200, h=80, gap=80)
+
+for (x, y), label in zip(positions, ["Start", "Process", "End"]):
+    shape = doc.rectangle(x, y, 200, 80, bg="blue")
+    doc.label(shape, label)
+
+doc.save("output.excalidraw")
+```
+
+Both scripts use the same `BOARDRAW_API_KEY` lookup (env var → `.env` file walk-up). No third-party dependencies required.
 
 ---
 
@@ -138,13 +171,16 @@ The script uses the same `BOARDRAW_API_KEY` lookup (env var → `.env` file). No
 
 ```
 boardraw.com-skill/
-├── generate/
-│   ├── SKILL.md          # Skill definition — Claude reads this when invoked
-│   └── scripts/
-│       └── upload.py     # Standalone Python upload script (stdlib only)
-├── .env.example          # API key template
-├── README.md             # This file (English)
-└── README-zh.md          # Chinese translation
+├── boardraw/
+│   ├── SKILL.md                    # Skill definition — Claude reads this when invoked
+│   ├── scripts/
+│   │   ├── excalidraw_builder.py   # ExcalidrawDoc builder — generates valid Excalidraw JSON
+│   │   └── upload.py               # Standalone upload script (stdlib only)
+│   └── references/
+│       └── excalidraw-schema.md    # Raw JSON field reference for advanced customisation
+├── .env.example                    # API key template
+├── README.md                       # This file (English)
+└── README-zh.md                    # Chinese translation
 ```
 
 ---
@@ -155,13 +191,14 @@ boardraw.com-skill/
 User prompt
     │
     ▼
-[Claude parses intent]
+[Claude parses intent → text outline]
+    │
+    │ user confirms (or adjusts)
+    ▼
+[excalidraw_builder.py builds elements]   ← never hand-written JSON
     │
     ▼
-[Text outline shown to user] ──── user adjusts ────┐
-    │ confirmed                                      │
-    ▼                                               │
-[Excalidraw JSON generated] ◄───────────────────────┘
+[JSON validated]
     │
     ▼
 [POST /api/keys/auth → boardraw.com]
@@ -170,7 +207,7 @@ User prompt
 [Shareable link returned]
 ```
 
-The generated JSON follows the [Excalidraw](https://excalidraw.com) format — it can also be opened directly in Excalidraw or any compatible tool.
+**Why a builder script?** The Excalidraw format requires strict two-way binding between shapes and their labels (`boundElements` + `containerId`), precise arrow snapping (`startBinding` / `endBinding`), and unique random `seed` / `versionNonce` per element. Hand-writing this JSON reliably is error-prone. The builder handles all of it automatically.
 
 ---
 
@@ -182,8 +219,16 @@ The generated JSON follows the [Excalidraw](https://excalidraw.com) format — i
 |---|---|
 | Auth header | `api_key: br_...` |
 | Body | `{ "whiteboard": { ...excalidraw object... } }` |
-| Success | `201` — returns file UUID and boardraw.com URL |
+| Success | `201` — returns `file.uuid` and user info |
 | Plan required | Pro or Team |
+
+**Error codes:**
+
+| Status | Meaning |
+|---|---|
+| 401 | Missing or invalid / revoked API key |
+| 403 | Free plan — upgrade required |
+| 400 | Malformed whiteboard JSON |
 
 ---
 
