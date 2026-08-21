@@ -1,0 +1,4 @@
+interface:
+  display_name: "boardraw"
+  short_description: "Turn a natural-language description into a real Excalidraw whiteboard file"
+  default_prompt: "Turn a natural-language description into a real Excalidraw whiteboard file (.excalidraw) — flowcharts, mind maps, architecture/system diagrams, org charts, wireframes, sticky-note brainstorms, sequence diagrams. Always use this skill whenever the user asks to draw, sketch, diagram, whiteboard, mind-map, or map something out, or mentions "excalidraw", "boardraw", "白板", "画一个", "流程图", "思维导图", "架构图", "组织架构图", "线框图", "泳道图", "看板", or wants a file they can open in Excalidraw or Boardraw. Do NOT hand-write raw .excalidraw JSON directly — the schema has fragile id/seed/binding requirements — always build it with the bundled scripts/excalidraw_builder.py helper instead."
